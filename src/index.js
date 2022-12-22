@@ -10,11 +10,21 @@ app.use(cors());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  const { username } = request.headers;
+  const findUsername = users.find(user => user.username === username);
+  if(!findUsername) {
+    return response.status(404).json({ error: "User not found" });
+  }
+  request.findUsername = findUsername ;
+  return next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+  if(user.pro === false && user.todos.lenght < 10 || user.pro === true) {
+    response.status(200).send();
+    next();
+  }
 }
 
 function checksTodoExists(request, response, next) {
@@ -22,7 +32,15 @@ function checksTodoExists(request, response, next) {
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  const { id } = request.params;
+
+  const findIndexUser = users.find(user => user.id === id);
+
+  if(findIndexUser) {
+    return response.status(404).json({ error: "User not found" });
+  }
+  request.findUserById = findUserById;
+  next();
 }
 
 app.post('/users', (request, response) => {
