@@ -11,35 +11,46 @@ const users = [];
 
 function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers;
-  const findUsername = users.find(user => user.username === username);
-  if(!findUsername) {
-    return response.status(404).json({ error: "User not found" });
-  }
-  request.findUsername = findUsername ;
-  return next();
+  const user = users.find(user => user.username === username);
+  if (!user) {
+    response.status(404).json({ error: "User not found" })
+  };
+  request.user = user;
+  next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
   const { user } = request;
-  if(user.pro === false && user.todos.lenght < 10 || user.pro === true) {
-    response.status(200).send();
-    next();
+
+  if (!user.pro === false && !user.todos.lenght < 10 || user.pro === true) {
+    response.status(400).json({ error: "Error" })
   }
+
+  next();
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  // ??? DUVIDA SOBRE A VALIDACAO DO UUID
+  // const { username } = request.headers;
+  // const { id } = request.params;
+
+  // const user = users.find(user => user.username === username);
+
+  // if(user) {
+  //   // response.status(400).send({ error: "User not found" })
+
+  // }
+
+
 }
 
 function findUserById(request, response, next) {
   const { id } = request.params;
-
-  const findIndexUser = users.find(user => user.id === id);
-
-  if(findIndexUser) {
-    return response.status(404).json({ error: "User not found" });
+  const user = users.find(user => user.id === id);
+  if (!user) {
+    return response.status(404).json({ error: id });
   }
-  request.findUserById = findUserById;
+  request.user = user;
   next();
 }
 
