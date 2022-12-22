@@ -22,9 +22,9 @@ function checksExistsUserAccount(request, response, next) {
 function checksCreateTodosUserAvailability(request, response, next) {
   const { user } = request;
 
-  if(user.pro) {
+  if (user.pro) {
     return next();
-  } else if(!user.pro && user.todos.length + 1 <= 10) {
+  } else if (!user.pro && user.todos.length + 1 <= 10) {
     return next();
   }
 
@@ -32,28 +32,28 @@ function checksCreateTodosUserAvailability(request, response, next) {
 }
 
 function checksTodoExists(request, response, next) {
- const { username } = request.headers;
- const { id } = request.params;
+  const { username } = request.headers;
+  const { id } = request.params;
 
- const user = users.find(user => user.username === username);
+  const user = users.find(user => user.username === username);
+  if (!user) {
+    return response.status(404).json({ error: "User not found" })
+  }
 
- if(!user) {
-  return response.status(404).json({ error: "User don't found" });
- }
- if(!validate(id)) {
-  return response.status(400).json({ error: "Todo id is incorrect" });
- }
+  if(!validate(id)) {
+    return response.status(400).json({ error: "ID is invalid" });
+  }
 
- const userTodo = user.todos.find(todo => todo.id === id);
+  const userTodo = user.todos.find(todo => todo.id === id);
 
- if(!userTodo) {
-  return response.status(404).json({ error: "Todo don't found" });
- }
+  if (!userTodo) {
+    return response.status(404).json({ error: "Todo not found" })
+  }
 
- request.todo = userTodo;
- request.user = user;
+  request.todo = userTodo;
+  request.user = user;
 
- return next();
+  return next();
 }
 
 function findUserById(request, response, next) {
